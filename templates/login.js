@@ -37,6 +37,22 @@ Template.login.helpers({
 });
 
 Template.login.events({
+
+    'click .facebook-button'(event) {
+    event.preventDefault();
+    // Handle Facebook login
+     Meteor.loginWithFacebook({
+            requestPermissions: ['email', 'public_profile'],
+            loginStyle: 'popup'
+        }, (error, result) => {
+            if (error) {
+                console.log('Facebook login error:', error);
+                errorMessage.set('Facebook login failed. Please try again.');
+            } else {
+                console.log('Facebook login successful');
+            }
+        });
+  },
   'click .google-button'(event) {
     event.preventDefault();
     // Handle Google login

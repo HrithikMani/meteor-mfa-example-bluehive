@@ -8,7 +8,7 @@ Template.layout.helpers({
   userDisplayName() {
     const user = Meteor.user();
     if (user) {
-      return user.username || (user.emails && user.emails[0].address) || user.services.google.name || 'User';
+      return user.username || (user.emails && user.emails[0].address) || user.services.google.name || user.services.facebook.name || 'User';
     }
     return '';
   }

@@ -28,6 +28,23 @@ Template.dashboard.helpers({
   userInfo() {
     const user = Meteor.user();
     if (!user) return {};
+    if (user.services.facebook) {
+      return {
+        username: user.services.facebook.name,
+        email: user.services.facebook.email,
+        createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : 'Unknown'
+    };
+    }
+
+
+
+
     if(user.services.google){
       return {
         username: user.services.google.name,
@@ -40,7 +57,7 @@ Template.dashboard.helpers({
         minute: '2-digit'
       }) : 'Unknown'
     };
-  }
+    }
     return {
       username: user.username || 'Not set',
       email: (user.emails && user.emails[0] && user.emails[0].address) || 'Not set',
