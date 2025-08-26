@@ -1,0 +1,21 @@
+<!-- client/templates/layout.html -->
+<template name="layout">
+  <div class="app">
+    <header class="app-header">
+      <h1>🔐 Secure Login App</h1>
+      {{#if currentUser}}
+        <div class="user-info">
+          Welcome, {{userDisplayName}}
+        </div>
+      {{/if}}
+    </header>
+    
+    <main class="app-main">
+      {{> yield}}
+    </main>
+    
+    <footer class="app-footer">
+      <p>Powered by Meteor + Blaze + accounts-2fa</p>
+    </footer>
+  </div>
+</template>

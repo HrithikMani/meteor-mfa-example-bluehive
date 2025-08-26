@@ -1,0 +1,99 @@
+<!-- client/templates/dashboard.html -->
+<template name="dashboard">
+  <div class="dashboard-container">
+    <div class="dashboard-card">
+      <div class="dashboard-header">
+        <h2>Account Dashboard</h2>
+        <div style="display: flex; gap: 10px;">
+          <button class="auth-button secondary small">
+            Refresh
+          </button>
+          <button class="auth-button secondary small logout-btn">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- User Information -->
+      <div class="info-section">
+        <h3>Account Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Username:</label>
+            <span>{{userInfo.username}}</span>
+          </div>
+          <div class="info-item">
+            <label>Email:</label>
+            <span>{{userInfo.email}}</span>
+          </div>
+          <div class="info-item">
+            <label>Account Created:</label>
+            <span>{{userInfo.createdAt}}</span>
+          </div>
+          <div class="info-item">
+            <label>Last Login:</label>
+            <span>{{userInfo.lastLogin}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2FA Section -->
+      <div class="security-section">
+        <h3>Security Settings</h3>
+        
+        <div class="security-card">
+          <div class="security-header">
+            <div class="security-title">
+              <h4>Two-Factor Authentication</h4>
+              <span class="status-badge disabled">
+                ❌ Disabled
+              </span>
+            </div>
+          </div>
+          
+          <div class="security-content">
+            <p>
+              Enable two-factor authentication to add an extra layer of security to your account.
+            </p>
+            
+            <div class="security-actions">
+              <button class="auth-button primary">
+                Enable 2FA
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Recommendations -->
+      <div class="recommendations-section">
+        <h3>Security Recommendations</h3>
+        <div class="recommendation-list">
+          <div class="recommendation-item pending">
+            <span class="recommendation-icon">⚠️</span>
+            <div class="recommendation-content">
+              <h4>Enable Two-Factor Authentication</h4>
+              <p>Add an extra layer of security to your account</p>
+            </div>
+          </div>
+          
+          <div class="recommendation-item completed">
+            <span class="recommendation-icon">✅</span>
+            <div class="recommendation-content">
+              <h4>Strong Password</h4>
+              <p>Your account is protected with a secure password</p>
+            </div>
+          </div>
+          
+          <div class="recommendation-item pending">
+            <span class="recommendation-icon">💡</span>
+            <div class="recommendation-content">
+              <h4>Regular Security Review</h4>
+              <p>Review your security settings periodically</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
