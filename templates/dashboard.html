@@ -5,7 +5,7 @@
       <div class="dashboard-header">
         <h2>Account Dashboard</h2>
         <div style="display: flex; gap: 10px;">
-          <button class="auth-button secondary small">
+          <button class="auth-button secondary small refresh-btn">
             Refresh
           </button>
           <button class="auth-button secondary small logout-btn">
@@ -45,22 +45,42 @@
           <div class="security-header">
             <div class="security-title">
               <h4>Two-Factor Authentication</h4>
-              <span class="status-badge disabled">
-                ❌ Disabled
-              </span>
+              {{#if twoFactorEnabled}}
+                <span class="status-badge enabled">
+                  ✅ Enabled
+                </span>
+              {{else}}
+                <span class="status-badge disabled">
+                  ❌ Disabled
+                </span>
+              {{/if}}
             </div>
           </div>
           
           <div class="security-content">
-            <p>
-              Enable two-factor authentication to add an extra layer of security to your account.
-            </p>
-            
-            <div class="security-actions">
-              <button class="auth-button primary">
-                Enable 2FA
-              </button>
-            </div>
+            {{#if twoFactorEnabled}}
+              <p>
+                Two-factor authentication is currently enabled for your account. 
+                This adds an extra layer of security when logging in.
+              </p>
+              
+              <div class="security-actions">
+                <button class="auth-button danger disable-2fa-btn">
+                  Disable 2FA
+                </button>
+              </div>
+            {{else}}
+              <p>
+                Enable two-factor authentication to add an extra layer of security to your account.
+                You'll need an authenticator app like Google Authenticator, Authy, or 1Password.
+              </p>
+              
+              <div class="security-actions">
+                <button class="auth-button primary enable-2fa-btn">
+                  Enable 2FA
+                </button>
+              </div>
+            {{/if}}
           </div>
         </div>
       </div>
@@ -69,13 +89,23 @@
       <div class="recommendations-section">
         <h3>Security Recommendations</h3>
         <div class="recommendation-list">
-          <div class="recommendation-item pending">
-            <span class="recommendation-icon">⚠️</span>
-            <div class="recommendation-content">
-              <h4>Enable Two-Factor Authentication</h4>
-              <p>Add an extra layer of security to your account</p>
+          {{#if twoFactorEnabled}}
+            <div class="recommendation-item completed">
+              <span class="recommendation-icon">✅</span>
+              <div class="recommendation-content">
+                <h4>Two-Factor Authentication Enabled</h4>
+                <p>Your account is protected with 2FA</p>
+              </div>
             </div>
-          </div>
+          {{else}}
+            <div class="recommendation-item pending">
+              <span class="recommendation-icon">⚠️</span>
+              <div class="recommendation-content">
+                <h4>Enable Two-Factor Authentication</h4>
+                <p>Add an extra layer of security to your account</p>
+              </div>
+            </div>
+          {{/if}}
           
           <div class="recommendation-item completed">
             <span class="recommendation-icon">✅</span>
