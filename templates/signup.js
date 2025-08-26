@@ -52,40 +52,22 @@ Template.signup.events({
       return;
     }
     
-    // Create user account
+    // Create user account using async method (NO CALLBACK!)
     const userData = {
       username: username,
       email: email,
       password: password
     };
     
-    Accounts.createUserAsync(userData, (error) => {
-      template.isLoading.set(false);
-      
-      if (error) {
-        console.error('Signup error:', error);
+    // Use async/await pattern instead of callback
+    (async () => {
+      try {
+        const userId = await Accounts.createUserAsync(userData);
         
-        // Handle specific error types
-        switch (error.error) {
-          case 403:
-            if (error.reason.includes('Username already exists')) {
-              template.errorMessage.set('Username is already taken. Please choose a different one.');
-            } else if (error.reason.includes('Email already exists')) {
-              template.errorMessage.set('An account with this email already exists.');
-            } else {
-              template.errorMessage.set(error.reason);
-            }
-            break;
-          case 400:
-            template.errorMessage.set('Please check your information and try again');
-            break;
-          default:
-            template.errorMessage.set(error.reason || 'Account creation failed. Please try again.');
-        }
-      } else {
         // Account created successfully and user is automatically logged in
-        console.log('Account created successfully');
+        console.log('Account created successfully, userId:', userId);
         template.successMessage.set('Account created successfully! Redirecting to dashboard...');
+        template.isLoading.set(false);
         
         // Clear form
         target.reset();
@@ -94,8 +76,30 @@ Template.signup.events({
         setTimeout(() => {
           FlowRouter.go('/dashboard');
         }, 1500);
+        
+      } catch (error) {
+        template.isLoading.set(false);
+        console.error('Signup error:', error);
+        
+        // Handle specific error types
+        switch (error.error) {
+          case 403:
+            if (error.reason && error.reason.includes('Username already exists')) {
+              template.errorMessage.set('Username is already taken. Please choose a different one.');
+            } else if (error.reason && error.reason.includes('Email already exists')) {
+              template.errorMessage.set('An account with this email already exists.');
+            } else {
+              template.errorMessage.set(error.reason || 'Account creation failed');
+            }
+            break;
+          case 400:
+            template.errorMessage.set('Please check your information and try again');
+            break;
+          default:
+            template.errorMessage.set(error.reason || 'Account creation failed. Please try again.');
+        }
       }
-    });
+    })();
   },
   
   'click .go-to-login'(event) {
