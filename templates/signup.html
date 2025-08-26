@@ -5,6 +5,14 @@
       <h2>Create Your Account</h2>
       <p class="auth-subtitle">Join us to get started with secure authentication</p>
       
+      {{#if errorMessage}}
+        <div class="error-message">{{errorMessage}}</div>
+      {{/if}}
+      
+      {{#if successMessage}}
+        <div class="success-message">{{successMessage}}</div>
+      {{/if}}
+      
       <form class="auth-form">
         <div class="form-group">
           <label for="username">Username</label>
@@ -12,8 +20,9 @@
             id="username"
             type="text"
             name="username"
-            placeholder="Choose a username"
+            placeholder="Choose a username (3-30 characters)"
             autocomplete="username"
+            disabled="{{isLoading}}"
           />
         </div>
 
@@ -25,6 +34,7 @@
             name="email"
             placeholder="Enter your email address"
             autocomplete="email"
+            disabled="{{isLoading}}"
           />
         </div>
 
@@ -34,8 +44,9 @@
             id="password"
             type="password"
             name="password"
-            placeholder="Create a strong password"
+            placeholder="Create a strong password (min 6 chars, letters + numbers)"
             autocomplete="new-password"
+            disabled="{{isLoading}}"
           />
         </div>
 
@@ -47,11 +58,17 @@
             name="confirmPassword"
             placeholder="Confirm your password"
             autocomplete="new-password"
+            disabled="{{isLoading}}"
           />
         </div>
 
-        <button type="submit" class="auth-button primary">
-          Create Account
+        <button type="submit" class="auth-button primary" disabled="{{isLoading}}">
+          {{#if isLoading}}
+            <span class="spinner"></span>
+            Creating Account...
+          {{else}}
+            Create Account
+          {{/if}}
         </button>
       </form>
 
