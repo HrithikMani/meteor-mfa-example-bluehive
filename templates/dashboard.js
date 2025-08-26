@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 
 import './dashboard.html';
 
+
 // Create reactive variable to track 2FA status
 const twoFactorStatus = new ReactiveVar(false);
 
@@ -27,7 +28,19 @@ Template.dashboard.helpers({
   userInfo() {
     const user = Meteor.user();
     if (!user) return {};
-    
+    if(user.services.google){
+      return {
+        username: user.services.google.name,
+        email: user.services.google.email,
+         createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : 'Unknown'
+    };
+  }
     return {
       username: user.username || 'Not set',
       email: (user.emails && user.emails[0] && user.emails[0].address) || 'Not set',

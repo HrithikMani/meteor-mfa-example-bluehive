@@ -37,6 +37,18 @@ Template.login.helpers({
 });
 
 Template.login.events({
+  'click .google-button'(event) {
+    event.preventDefault();
+    // Handle Google login
+    Meteor.loginWithGoogle((error) => {
+      if (error) {
+        console.log('Google login error:', error);
+        errorMessage.set('Google login failed. Please try again.');
+      } else {
+        console.log('Google login successful');
+      }
+    });
+  },
   'submit .login-form'(event) {
     event.preventDefault();
     
