@@ -1,192 +1,88 @@
-# Meteor Two-Factor Authentication Demo App
+# Meteor OAuth + 2FA Demo
 
-A modern, secure authentication application built with Meteor and React that demonstrates comprehensive two-factor authentication (2FA) implementation using authenticator apps like Google Authenticator, 1Password, Authy, and others.
-
-## 🔐 Features
-
-- **User Authentication**: Secure login and registration system
-- **Two-Factor Authentication**: Complete 2FA implementation with QR code setup
-- **Authenticator App Integration**: Works with Google Authenticator, 1Password, Authy, and other TOTP apps
-- **Modern UI**: Clean, responsive interface with beautiful gradients and animations
-- **Account Dashboard**: Comprehensive security overview and management
-- **Real-time Validation**: Instant feedback for 2FA codes and authentication
-- **Security Recommendations**: Built-in security best practices guidance
+A complete implementation demonstrating OAuth providers with 2FA integration using the new `loginWithExternalServiceAnd2fa` method from [PR #13906](https://github.com/meteor/meteor/pull/13906).
 
 ## 🚀 Quick Start
 
-### Prerequisites
+```bash
+git clone https://github.com/bluehive-health/meteor-mfa-example
+cd meteor-mfa-example
+meteor npm install
+meteor run
+```
 
-- [Node.js](https://nodejs.org/) (v22 or higher)
-- [Meteor](https://www.meteor.com/developers/install) (v3.3)
+Visit `http://localhost:3000` and create an account or configure OAuth providers.
 
-### Installation
+## ✨ Features
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/bluehive-health/meteor-mfa-example
-   cd meteor-mfa-example
-   ```
+### OAuth Integration
+- **Google OAuth** with 2FA support
+- **Facebook OAuth** with 2FA support
+- Seamless popup/redirect authentication
 
-2. **Install dependencies**
-   ```bash
-   meteor npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   meteor run
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-### Test Account
-
-The app automatically creates a test user on first startup:
-- **Username**: `testuser`
-- **Email**: `test@example.com`
-- **Password**: `password123`
-
-## 📱 How to Use
-
-### 1. Create an Account or Login
-- Register a new account with username, email, and password
-- Or login with the test credentials above
-
-### 2. Enable Two-Factor Authentication
-- Go to the Dashboard after logging in
-- Click "Enable 2FA" in the Security Settings section
-- Scan the QR code with your authenticator app:
-  - **Google Authenticator** (iOS/Android)
-  - **1Password** (iOS/Android/Desktop)
-  - **Authy** (iOS/Android/Desktop)
-  - **Microsoft Authenticator** (iOS/Android)
-  - **Any TOTP-compatible authenticator**
-
-### 3. Verify Setup
-- Enter the 6-digit code from your authenticator app
-- Click "Enable 2FA" to complete setup
-
-### 4. Login with 2FA
-- Logout and login again
-- After entering username/password, you'll see the 2FA verification screen
-- Enter the current 6-digit code from your authenticator app
-- Complete the secure login process
-
-## 🛠 Technical Implementation
-
-### Core 2FA Methods
-
-The app uses the `accounts-2fa` package which provides these key methods:
-
-#### Client-Side Methods
+### 2FA Implementation
+Built on Meteor's native 2FA system with new OAuth + 2FA integration:
 
 ```javascript
-// Check if user has 2FA enabled
-Accounts.has2faEnabled((error, enabled) => {
-  console.log('2FA Status:', enabled);
-});
+// NEW: OAuth + 2FA Login (from PR #13906)
+Meteor.loginWithExternalServiceAnd2fa(credentialToken, otpCode, callback);
 
-// Generate QR code for setup
-Accounts.generate2faActivationQrCode("App Name", (error, result) => {
-  const { svg, secret } = result;
-  // Display QR code to user
-});
+// Standard 2FA Methods
+Accounts.generate2faActivationQrCode("App Name", callback);
+Accounts.enableUser2fa(verificationCode, callback);
+Accounts.has2faEnabled(callback);
+Accounts.disableUser2fa(callback);
+Meteor.loginWithPasswordAnd2faCode(user, password, code, callback);
+```
 
-// Enable 2FA with verification code
-Accounts.enableUser2fa(verificationCode, (error) => {
-  if (!error) {
-    console.log('2FA enabled successfully');
+### UI Components
+- Clean login/signup flow
+- QR code generation for authenticator apps
+- Real-time 2FA verification
+- Responsive dashboard with security settings
+
+## 🛠 OAuth Setup
+
+Create `settings.json`:
+```json
+{
+  "google": {
+    "clientId": "your-google-client-id",
+    "clientSecret": "your-google-client-secret"
+  },
+  "facebook": {
+    "appId": "your-facebook-app-id", 
+    "secret": "your-facebook-secret"
   }
-});
-
-// Disable 2FA
-Accounts.disableUser2fa((error) => {
-  if (!error) {
-    console.log('2FA disabled successfully');
-  }
-});
-
-// Login with 2FA code
-Meteor.loginWithPasswordAnd2faCode(username, password, code, (error) => {
-  if (!error) {
-    console.log('Successfully logged in with 2FA');
-  }
-});
+}
 ```
 
-### Project Structure
+Run with: `meteor run --settings settings.json`
 
-```
-meteor-mfa/
-├── client/
-│   ├── main.jsx          # Client entry point
-│   ├── main.html         # HTML template
-│   └── main.css          # Global styles
-├── imports/
-│   └── ui/
-│       ├── App.jsx           # Main app component
-│       ├── LoginForm.jsx     # Login interface
-│       ├── SignupForm.jsx    # Registration interface
-│       ├── TwoFactorSetup.jsx # 2FA setup flow
-│       ├── TwoFactorLogin.jsx # 2FA verification
-│       └── Dashboard.jsx     # User dashboard
-├── server/
-│   └── main.js           # Server setup and config
-└── .meteor/
-    └── packages          # Meteor packages
-```
+## 🔐 2FA Flow
 
-### Key Dependencies
+1. **Standard Login** → User enters credentials
+2. **2FA Challenge** → If enabled, shows 2FA prompt
+3. **OAuth Login** → External service redirects with credential token
+4. **2FA Required** → If user has 2FA enabled, collect OTP code
+5. **Complete Login** → Verify OTP and log in user
 
-- **meteor-base**: Core Meteor functionality
-- **accounts-base**: User account management
-- **accounts-password**: Password authentication
-- **accounts-2fa**: Two-factor authentication
-- **react-meteor-data**: React integration
-- **mongo**: Database integration
+## 📱 Authenticator Apps
 
+Works with:
+- Google Authenticator
+- Authy
+- 1Password
+- Microsoft Authenticator
+- Any TOTP-compatible app
 
-## 🔒 Security Features
+## 🎯 Key Implementation
 
-### Two-Factor Authentication
-- **TOTP (Time-based One-Time Password)**: Industry standard 2FA
-- **QR Code Setup**: Easy authenticator app integration
-- **Backup Codes**: Recovery options (can be extended)
-- **Session Management**: Secure token handling
+This demo implements the **OAuth + 2FA integration** from [Meteor PR #13906](https://github.com/meteor/meteor/pull/13906), specifically the new `loginWithExternalServiceAnd2fa` method that enables seamless 2FA verification after OAuth authentication.
 
-### Best Practices Implemented
-- Input validation and sanitization
-- Secure password handling
-- Rate limiting protection
-- Session timeout management
-- Error handling without information disclosure
-
-## 🚀 Deployment
-
-### Development
-```bash
-meteor run --port 3000
-```
-
-## 📦 Package Configuration
-
-### Meteor Packages Used
-```
-meteor-base@1.5.2           # Core Meteor
-accounts-base                # User accounts
-accounts-password            # Password auth
-accounts-2fa                 # Two-factor auth
-react-meteor-data           # React integration
-mongo@2.1.2                 # Database
-ecmascript@0.16.11          # Modern JavaScript
-typescript@5.6.4            # TypeScript support
-```
-
-## 📄 Resources
-
-- [Meteor Documentation](https://docs.meteor.com/packages/accounts-2fa)
-- [accounts-2fa Package](https://github.com/meteor/meteor/tree/devel/packages/accounts-2fa)
-- [React Documentation](https://reactjs.org/)
-- [TOTP Standard (RFC 6238)](https://tools.ietf.org/html/rfc6238)
-- [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)
+The implementation handles:
+- OAuth credential temporary storage during 2FA challenge
+- New `loginWithExternalServiceAnd2fa` method integration
+- Secure token-based verification flow  
+- Automatic cleanup of expired challenges
+- Error handling for various failure scenarios
