@@ -6,6 +6,9 @@ import { Meteor } from 'meteor/meteor';
 
 import './login.html';
 
+
+
+
 // Reactive variables for managing state
 const showTwoFactorInput = new ReactiveVar(false);
 const loginCredentials = new ReactiveVar({});
@@ -59,7 +62,20 @@ Template.login.events({
     Meteor.loginWithGoogle((error) => {
       if (error) {
         console.log('Google login error:', error);
-        errorMessage.set('Google login failed. Please try again.');
+        if(error.error === "[2fa enabled]"){
+          const a = prompt("Enter 2FA code");
+          
+          Meteor.loginWithExternalServiceAnd2fa(error.details.credentialToken, a, (err) => {
+            if (err) {
+              console.log('2FA login error:', err);
+              errorMessage.set('2FA login failed. Please try again.');
+            } else {
+              console.log('2FA login successful');
+            }
+          });
+
+
+        }
       } else {
         console.log('Google login successful');
       }
